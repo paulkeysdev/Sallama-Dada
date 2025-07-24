@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+  /* Sister in Safety Design System - Color Hunt Palette Edition */
+
+  --background: 30 100% 98%; /* soft background */
+  --foreground: 0 0% 20%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+
+  /* Trust & Safety Colors */
+  --primary: 32 100% 50%;              /* #FF9F00 */
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 32 100% 65%;
+
+  --secondary: 180 45% 40%;            /* #309898 */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 30 40% 90%;
+  --muted-foreground: 0 0% 40%;
+
+  --accent: 18 89% 55%;                /* #F4631E */
+  --accent-foreground: 0 0% 100%;
+
+  /* Emergency Colors */
+  --emergency: 0 97% 40%;              /* #CB0404 */
+  --emergency-foreground: 0 0% 100%;
+  --emergency-glow: 0 97% 55%;
+
+  /* Success/Safe Colors */
+  --success: 180 45% 40%;              /* reuse #309898 */
+  --success-foreground: 0 0% 100%;
+
+  --destructive: 0 95% 45%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 30 40% 85%;
+  --input: 30 40% 92%;
+  --ring: 32 100% 50%;
+
+  /* Custom Gradients */
+  --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+  --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-glow)));
+  --gradient-safe: linear-gradient(135deg, hsl(var(--success)), hsl(var(--accent)));
+  --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px hsla(var(--primary), 0.1);
+  --shadow-emergency: 0 8px 30px hsla(var(--emergency), 0.3);
+  --shadow-glow: 0 0 40px hsla(var(--primary-glow), 0.4);
+
+  --radius: 0.5rem;
+
+  /* Sidebar */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 0 0% 20%;
+  --sidebar-primary: 32 100% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 18 89% 55%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 30 30% 85%;
+  --sidebar-ring: 18 89% 55%;
+}
+
+/* Optional dark theme */
+.dark {
+  --background: 210 30% 8%;
+  --foreground: 0 0% 98%;
+
+  --card: 210 30% 10%;
+  --card-foreground: 0 0% 98%;
+
+  --popover: 210 30% 10%;
+  --popover-foreground: 0 0% 98%;
+
+  --primary: 32 100% 65%;
+  --primary-foreground: 0 0% 10%;
+
+  --secondary: 180 45% 40%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 210 30% 15%;
+  --muted-foreground: 0 0% 70%;
+
+  --accent: 18 89% 55%;
+  --accent-foreground: 0 0% 98%;
+
+  --emergency: 0 97% 50%;
+  --emergency-foreground: 0 0% 98%;
+
+  --success: 180 45% 40%;
+  --success-foreground: 0 0% 98%;
+
+  --destructive: 0 90% 50%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 210 30% 15%;
+  --input: 210 30% 20%;
+  --ring: 32 100% 65%;
+
+  --sidebar-background: 0 0% 10%;
+  --sidebar-foreground: 0 0% 90%;
+  --sidebar-primary: 32 100% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 18 89% 55%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 0 0% 30%;
+  --sidebar-ring: 18 89% 55%;
+}
+
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-card text-card-foreground rounded-xl shadow-[var(--shadow-soft)] p-6 transition-all duration-300;
+  }
+  .card-emergency {
+    background: var(--gradient-emergency);
+    color: hsl(var(--emergency-foreground));
+    box-shadow: var(--shadow-emergency);
+  }
+  .btn-primary {
+    background: var(--gradient-primary);
+    color: hsl(var(--primary-foreground));
+    @apply rounded-lg px-6 py-2 font-semibold shadow-[var(--shadow-soft)] hover:scale-105 hover:shadow-lg transition-all duration-300;
+  }
+  .btn-emergency {
+    background: var(--gradient-emergency);
+    color: hsl(var(--emergency-foreground));
+    @apply rounded-lg px-6 py-2 font-bold shadow-[var(--shadow-emergency)] hover:scale-105 hover:shadow-lg transition-all duration-300;
+  }
+  .heading-xl {
+    @apply text-4xl font-bold mb-4 tracking-tight;
+  }
+  .heading-lg {
+    @apply text-2xl font-semibold mb-2;
+  }
+  .section {
+    @apply py-12 px-4 md:px-12;
+  }
+}
+
+@layer utilities {
+  .animate-scale-in {
+    animation: scale-in 0.2s ease-out;
+  }
+  .animate-fade-in {
+    animation: fade-in 0.4s ease;
+  }
+  .hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+    transition: box-shadow 0.3s;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+html {
+  scroll-behavior: smooth;
+}
