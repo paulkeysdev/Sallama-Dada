@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Navigation, Shield, Phone, Building2, Filter } from "lucide-react";
+import { MapPin, Navigation, Shield, Phone, Building2, Filter, Loader2 } from "lucide-react"; // Add this import
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,19 +36,9 @@ interface SafeLocation {
 
 // Example locations with coordinates (replace with real data as needed)
 const safeLocations: SafeLocation[] = [
+  // Police Stations
   {
     id: "1",
-    name: "Kabete Police Station",
-    type: "police",
-    address: "123 Main Street, Downtown",
-    lat: -1.2647,
-    lng: 36.7156,
-    phone: "+1-555-POLICE",
-    isVerified: true,
-    hours: "24/7"
-  },
-    {
-    id: "6",
     name: "Central Police Station Nairobi",
     type: "police",
     address: "Moi Avenue, Nairobi",
@@ -59,7 +49,7 @@ const safeLocations: SafeLocation[] = [
     hours: "24/7"
   },
   {
-    id: "7",
+    id: "2",
     name: "Kilimani Police Station",
     type: "police",
     address: "Argwings Kodhek Rd, Nairobi",
@@ -70,7 +60,7 @@ const safeLocations: SafeLocation[] = [
     hours: "24/7"
   },
   {
-    id: "8",
+    id: "3",
     name: "Parklands Police Station",
     type: "police",
     address: "Ojijo Rd, Parklands, Nairobi",
@@ -80,60 +70,75 @@ const safeLocations: SafeLocation[] = [
     isVerified: true,
     hours: "24/7"
   },
+
+  // Hospitals
   {
-    id: "2",
-    name: "City General Hospital",
+    id: "4",
+    name: "Kenyatta National Hospital",
     type: "hospital",
-    address: "456 Health Avenue",
-    lat: -1.2620,
-    lng: 36.8000,
-    phone: "+1-555-HOSPITAL",
+    address: "Hospital Rd, Nairobi",
+    lat: -1.3001,
+    lng: 36.8065,
+    phone: "+254-20-2726300",
     isVerified: true,
     hours: "24/7"
   },
   {
-    id: "2",
-    name: "City General Hospital",
+    id: "5",
+    name: "Aga Khan University Hospital",
     type: "hospital",
-    address: "456 Health Avenue",
-    lat: -1.2620,
-    lng: 36.8000,
-    phone: "+1-555-HOSPITAL",
+    address: "3rd Parklands Ave, Nairobi",
+    lat: -1.2649,
+    lng: 36.8172,
+    phone: "+254-20-3662000",
     isVerified: true,
     hours: "24/7"
   },
   {
-    id: "3",
-    name: "Women's Shelter & Support Center",
+    id: "6",
+    name: "Nairobi Hospital",
+    type: "hospital",
+    address: "Argwings Kodhek Rd, Nairobi",
+    lat: -1.2986,
+    lng: 36.8065,
+    phone: "+254-20-2845000",
+    isVerified: true,
+    hours: "24/7"
+  },
+
+  // Safe Spaces
+  {
+    id: "7",
+    name: "Nairobi Women's Shelter",
     type: "safe_space",
-    address: "789 Safety Street",
-    lat: -1.2700,
-    lng: 36.7900,
-    phone: "+1-555-SHELTER",
+    address: "Ngong Rd, Nairobi",
+    lat: -1.3005,
+    lng: 36.7820,
+    phone: "+254-700-123456",
     isVerified: true,
     hours: "24/7 Hotline"
   },
   {
-    id: "4",
-    name: "Community Safety Center",
+    id: "8",
+    name: "Refugee Consortium Safe House",
     type: "safe_space",
-    address: "321 Community Lane",
-    lat: -1.2500,
-    lng: 36.7800,
-    phone: "+1-555-COMMUNITY",
+    address: "Westlands, Nairobi",
+    lat: -1.2640,
+    lng: 36.8040,
+    phone: "+254-722-111222",
     isVerified: true,
-    hours: "8 AM - 10 PM"
+    hours: "8 AM - 8 PM"
   },
   {
-    id: "5",
-    name: "North District Hospital",
-    type: "hospital",
-    address: "654 North Road",
-    lat: -1.2400,
-    lng: 36.7700,
-    phone: "+1-555-NORTH",
+    id: "9",
+    name: "FIDA Kenya Safe Space",
+    type: "safe_space",
+    address: "Karen, Nairobi",
+    lat: -1.3171,
+    lng: 36.7202,
+    phone: "+254-20-3870444",
     isVerified: true,
-    hours: "24/7"
+    hours: "8 AM - 5 PM"
   }
 ];
 
@@ -165,8 +170,10 @@ const SafeMap = () => {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [places, setPlaces] = useState<SafeLocation[]>([]);
+  const [isLocating, setIsLocating] = useState(false); // Add loading state
 
   const requestLocation = () => {
+    setIsLocating(true); // Start loading
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -175,13 +182,16 @@ const SafeMap = () => {
             lng: position.coords.longitude
           });
           setLocationError(null);
+          setIsLocating(false); // Stop loading
         },
         (error) => {
           setLocationError("Unable to retrieve your location.");
+          setIsLocating(false); // Stop loading
         }
       );
     } else {
       setLocationError("Geolocation is not supported by your browser.");
+      setIsLocating(false); // Stop loading
     }
   };
 
@@ -248,10 +258,18 @@ const SafeMap = () => {
         .filter(loc => loc.distanceKm <= 3)
     : safeLocations.filter(loc => loc.type === "safe_space");
 
-  // Merge dynamic and filtered static locations
+  // Always include all static locations, and add distance if userLocation is available
+  const staticLocationsWithDistance = userLocation
+    ? safeLocations.map(loc => ({
+        ...loc,
+        distanceKm: getDistanceFromLatLonInKm(userLocation.lat, userLocation.lng, loc.lat, loc.lng)
+      }))
+    : safeLocations;
+
+  // Merge dynamic (Google) and static locations
   let allLocations: SafeLocation[] = [
+    ...staticLocationsWithDistance,
     ...places,
-    ...filteredSafeSpaces,
   ];
 
   if (selectedFilter !== "all") {
@@ -277,9 +295,18 @@ const SafeMap = () => {
                 Find nearby police stations, hospitals, and verified safe spaces
               </p>
             </div>
-            <Button onClick={requestLocation} variant="outline">
-              <Navigation className="w-4 h-4 mr-2" />
-              Update Location
+            <Button onClick={requestLocation} variant="outline" disabled={isLocating}>
+              {isLocating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Locating...
+                </>
+              ) : (
+                <>
+                  <Navigation className="w-4 h-4 mr-2" />
+                  Update Location
+                </>
+              )}
             </Button>
           </div>
         </CardHeader>
