@@ -40,6 +40,7 @@ https://www.canva.com/design/DAGsN9KoKKY/tqigDv35Lbbt93kWVgZJBg/edit?utm_content
 
 
 ##Live Link 
+https://salamaaa-dadaaa.netlify.app/
 
 
 ## 🛡️ Security Notice
@@ -73,7 +74,7 @@ MIT License
 
 ## 💌 Contact
 
-Built with ❤️ by [Nancy Kerubo](https://github.com/KeruboNancy)  [Paul Wainaina](https://github.com/paulkeysdev)  by [Faith Gikura](https://github.com/FaithGikura)  by [Christian Sila](https://github.com/christian-74)   [Shamim Gitungo](https://github.com/shamtuz)  
+Built with ❤️ by [Nancy Kerubo](https://github.com/KeruboNancy) && [Paul Wainaina](https://github.com/paulkeysdev)  && [Faith Gikura](https://github.com/FaithGikura)  && [Christian Sila](https://github.com/christian-74) && [Shamim Gitungo](https://github.com/shamtuz)  
 For inquiries or collaborations: **salamadada@appsupport.co.ke**
 
 ---
