@@ -35,6 +35,13 @@ npm run dev
 
 ---
 
+## Pitch Deck link 
+https://www.canva.com/design/DAGsN9KoKKY/tqigDv35Lbbt93kWVgZJBg/edit?utm_content=DAGsN9KoKKY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+
+##Live Link 
+
+
 ## 🛡️ Security Notice
 
 Security is a **core focus**. Currently, the app is in early stages. Future updates will include:
@@ -66,7 +73,7 @@ MIT License
 
 ## 💌 Contact
 
-Built with ❤️ by [Nsancy Kerubo](https://github.com/KeruboNancy)  
+Built with ❤️ by [Nancy Kerubo](https://github.com/KeruboNancy)  [Paul Wainaina](https://github.com/paulkeysdev)  by [Faith Gikura](https://github.com/FaithGikura)  by [Christian Sila](https://github.com/christian-74)   [Shamim Gitungo](https://github.com/shamtuz)  
 For inquiries or collaborations: **salamadada@appsupport.co.ke**
 
 ---
