@@ -43,7 +43,7 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) => {
             <div className="flex items-center gap-2">
               <Shield className="w-6 h-6 text-primary" />
               <span className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">
-                Sister in Safety
+                Salama Dada
               </span>
             </div>
             <Button variant="ghost" size="icon" onClick={onClose}>
@@ -159,7 +159,15 @@ const AuthModal = ({ isOpen, onClose, mode, onSwitchMode }: AuthModalProps) => {
           
           {mode === "login" && (
             <div className="mt-4 text-center">
-              <Button variant="link" className="text-sm text-muted-foreground">
+              <Button
+                variant="link"
+                className="text-sm text-muted-foreground"
+                onClick={() => {
+                  // Redirect to a password reset page or open a reset modal
+                  navigate("/reset-password");
+                  onClose();
+                }}
+              >
                 Forgot your password?
               </Button>
             </div>

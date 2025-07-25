@@ -1,11 +1,41 @@
 import { Shield, Mic, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import React from "react";
 
 interface HeroProps {
   onGetStarted: () => void;
 }
 
 const Hero = ({ onGetStarted }: HeroProps) => {
+  // Voice demo handler
+  const handleVoiceDemo = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Sorry, your browser does not support speech recognition.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US"; // or "sw-KE" for Swahili
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      alert("Listening... Please speak now.");
+    };
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      alert(`You said: "${transcript}"`);
+    };
+
+    recognition.onerror = (event: any) => {
+      alert("Error occurred in recognition: " + event.error);
+    };
+
+    recognition.start();
+  };
+
   return (
     <section
       className="py-20 relative overflow-hidden bg-cover bg-center bg-no-repeat"
@@ -52,36 +82,11 @@ const Hero = ({ onGetStarted }: HeroProps) => {
             <Button
               variant="outline"
               size="xl"
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              onClick={handleVoiceDemo} // <-- Make the button functional
             >
               <Mic className="w-6 h-6 mr-2" />
               Try Voice Demo
             </Button>
-          </div>
-
-          {/* Feature highlights */}
-          <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
-          >
-            <div className="flex items-center justify-center gap-3 text-white/90">
-              <div className="w-10 h-10 bg-[#309898]/20 rounded-full flex items-center justify-center">
-                <Mic className="w-5 h-5 text-[#309898]" />
-              </div>
-              <span>Voice Activation</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 text-white/90">
-              <div className="w-10 h-10 bg-[#F4631E]/20 rounded-full flex items-center justify-center">
-                <MapPin className="w-5 h-5 text-[#F4631E]" />
-              </div>
-              <span>Live Location</span>
-            </div>
-            <div className="flex items-center justify-center gap-3 text-white/90">
-              <div className="w-10 h-10 bg-[#CB0404]/20 rounded-full flex items-center justify-center">
-                <Phone className="w-5 h-5 text-[#CB0404]" />
-              </div>
-              <span>Instant Alerts</span>
-            </div>
           </div>
         </div>
       </div>
