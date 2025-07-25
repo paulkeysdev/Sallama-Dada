@@ -46,7 +46,7 @@ const Features = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-6 animate-fade-in">
-            How Sister in Safety Protects You
+            How Salama Dada Protects You
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.1s" }}>
             Advanced technology meets human compassion to create a comprehensive safety network.
