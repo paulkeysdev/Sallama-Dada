@@ -144,8 +144,8 @@ const Dashboard = () => {
     localStorage.removeItem("authToken"); // Example: remove auth token
     // Optionally clear more user data if needed
 
-    // Redirect to login page
-    navigate("/login", { replace: true });
+    // Redirect to landing page
+    navigate("/", { replace: true }); // <-- Change "/login" to "/"
   };
 
   return (
