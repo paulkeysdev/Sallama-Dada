@@ -3,6 +3,8 @@ import { MapPin, Navigation, Shield, Phone, Building2, Filter } from "lucide-rea
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import axios from "axios";
 
 // Helper to calculate distance between two lat/lng points (Haversine formula)
 function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -42,6 +44,50 @@ const safeLocations: SafeLocation[] = [
     lat: -1.2647,
     lng: 36.7156,
     phone: "+1-555-POLICE",
+    isVerified: true,
+    hours: "24/7"
+  },
+    {
+    id: "6",
+    name: "Central Police Station Nairobi",
+    type: "police",
+    address: "Moi Avenue, Nairobi",
+    lat: -1.2841,
+    lng: 36.8219,
+    phone: "+254-20-2222222",
+    isVerified: true,
+    hours: "24/7"
+  },
+  {
+    id: "7",
+    name: "Kilimani Police Station",
+    type: "police",
+    address: "Argwings Kodhek Rd, Nairobi",
+    lat: -1.2921,
+    lng: 36.7836,
+    phone: "+254-20-2722354",
+    isVerified: true,
+    hours: "24/7"
+  },
+  {
+    id: "8",
+    name: "Parklands Police Station",
+    type: "police",
+    address: "Ojijo Rd, Parklands, Nairobi",
+    lat: -1.2635,
+    lng: 36.8167,
+    phone: "+254-20-3741211",
+    isVerified: true,
+    hours: "24/7"
+  },
+  {
+    id: "2",
+    name: "City General Hospital",
+    type: "hospital",
+    address: "456 Health Avenue",
+    lat: -1.2620,
+    lng: 36.8000,
+    phone: "+1-555-HOSPITAL",
     isVerified: true,
     hours: "24/7"
   },
@@ -109,10 +155,16 @@ const getLocationColor = (type: string) => {
   }
 };
 
+const mapContainerStyle = {
+  width: "100%",
+  height: "256px", // h-64
+};
+
 const SafeMap = () => {
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [places, setPlaces] = useState<SafeLocation[]>([]);
 
   const requestLocation = () => {
     if (navigator.geolocation) {
@@ -146,24 +198,73 @@ const SafeMap = () => {
     requestLocation();
   }, []);
 
-  // Filter and sort locations by distance if userLocation is available
-  let filteredLocations = safeLocations;
+  useEffect(() => {
+    const fetchNearbyPlaces = async () => {
+      if (!userLocation) return;
+      try {
+        const types = ["hospital", "police"];
+        let allResults: SafeLocation[] = [];
+        for (const type of types) {
+          const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${userLocation.lat},${userLocation.lng}&radius=3000&type=${type}&key=AIzaSyB4if5Ir7Gxea1nnxnQG3uIrkGkv9cIV9I`;
+          const res = await axios.get(url);
+          if (res.data.results) {
+            allResults = allResults.concat(
+              res.data.results.map((place: any, idx: number) => ({
+                id: `${type}-${place.place_id || idx}`,
+                name: place.name,
+                type: type as "hospital" | "police",
+                address: place.vicinity || place.formatted_address || "Unknown address",
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng,
+                phone: undefined,
+                isVerified: false,
+                hours: "Unknown",
+                distanceKm: getDistanceFromLatLonInKm(
+                  userLocation.lat,
+                  userLocation.lng,
+                  place.geometry.location.lat,
+                  place.geometry.location.lng
+                ),
+              }))
+            );
+          }
+        }
+        setPlaces(allResults);
+      } catch (err) {
+        // Optionally handle error
+      }
+    };
+    fetchNearbyPlaces();
+  }, [userLocation]);
+
+  // Filter static safe spaces to only those within 3km of the user
+  const filteredSafeSpaces = userLocation
+    ? safeLocations
+        .filter(loc => loc.type === "safe_space")
+        .map(loc => ({
+          ...loc,
+          distanceKm: getDistanceFromLatLonInKm(userLocation.lat, userLocation.lng, loc.lat, loc.lng)
+        }))
+        .filter(loc => loc.distanceKm <= 3)
+    : safeLocations.filter(loc => loc.type === "safe_space");
+
+  // Merge dynamic and filtered static locations
+  let allLocations: SafeLocation[] = [
+    ...places,
+    ...filteredSafeSpaces,
+  ];
+
   if (selectedFilter !== "all") {
-    filteredLocations = filteredLocations.filter(location => location.type === selectedFilter);
+    allLocations = allLocations.filter(location => location.type === selectedFilter);
   }
   if (userLocation) {
-    filteredLocations = filteredLocations
-      .map(location => ({
-        ...location,
-        distanceKm: getDistanceFromLatLonInKm(
-          userLocation.lat,
-          userLocation.lng,
-          location.lat,
-          location.lng
-        )
-      }))
-      .sort((a, b) => (a.distanceKm! - b.distanceKm!));
+    allLocations = allLocations.sort((a, b) => (a.distanceKm! - b.distanceKm!));
   }
+
+  // Google Maps API loader
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyB4if5Ir7Gxea1nnxnQG3uIrkGkv9cIV9I", // Your API key
+  });
 
   return (
     <div className="space-y-6">
@@ -216,49 +317,47 @@ const SafeMap = () => {
             </Button>
           </div>
 
-          {/* Mock Map Area */}
-          <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center mb-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-green-500/10" />
-            <div className="text-center z-10">
-              <MapPin className="w-12 h-12 mx-auto mb-2 text-primary" />
-              <p className="text-muted-foreground">Interactive Map View</p>
-              {userLocation ? (
-                <div className="text-sm text-primary mt-2">
-                  <strong>Your Location:</strong><br />
-                  Lat: {userLocation.lat.toFixed(5)}, Lng: {userLocation.lng.toFixed(5)}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  Click 'Update Location' to enable map
-                </p>
-              )}
-              {locationError && (
-                <p className="text-xs text-red-500 mt-2">{locationError}</p>
-              )}
-            </div>
-            {/* Mock location pins */}
-            <div className="absolute top-1/4 left-1/4 text-2xl animate-bounce">🚓</div>
-            <div className="absolute top-1/3 right-1/3 text-2xl animate-bounce" style={{ animationDelay: "0.5s" }}>🏥</div>
-            <div className="absolute bottom-1/3 left-1/2 text-2xl animate-bounce" style={{ animationDelay: "1s" }}>🛡️</div>
-            {/* Show user's location as a pin if available */}
-            {userLocation && (
-              <div
-                className="absolute"
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)"
-                }}
+          {/* Real Google Map Area */}
+          <div className="h-64 rounded-lg mb-6 overflow-hidden">
+            {isLoaded && userLocation ? (
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={userLocation}
+                zoom={15}
               >
-                <span className="text-3xl">📍</span>
-                <div className="text-xs text-primary text-center">You</div>
+                <Marker position={userLocation} label="You" />
+                {allLocations.map((location) => (
+                  <Marker
+                    key={location.id}
+                    position={{ lat: location.lat, lng: location.lng }}
+                    label={getLocationIcon(location.type)}
+                  />
+                ))}
+              </GoogleMap>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center bg-muted/50 rounded-lg">
+                <MapPin className="w-12 h-12 mb-2 text-primary" />
+                <p className="text-muted-foreground">Interactive Map View</p>
+                {userLocation ? (
+                  <div className="text-sm text-primary mt-2">
+                    <strong>Your Location:</strong><br />
+                    Lat: {userLocation.lat.toFixed(5)}, Lng: {userLocation.lng.toFixed(5)}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">
+                    Click 'Update Location' to enable map
+                  </p>
+                )}
+                {locationError && (
+                  <p className="text-xs text-red-500 mt-2">{locationError}</p>
+                )}
               </div>
             )}
           </div>
 
           {/* Locations List */}
           <div className="space-y-3">
-            {filteredLocations.map((location) => (
+            {allLocations.map((location) => (
               <Card key={location.id} className="transition-all hover:shadow-soft">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
