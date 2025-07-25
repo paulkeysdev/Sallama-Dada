@@ -1,36 +1,76 @@
-# 🛡️ SafeSister – Sister in Safety Net
 
-**SafeSister** is an AI-powered safety platform designed to empower and protect women in Kenya. The app provides quick access to emergency help, safety resources, and a smart assistant chatbot — all wrapped in a clean, responsive, and user-friendly interface.
+# 🌸 SalamaDada
+
+**Your Safety, Your Power.**  
+*SalamaDada* is a women's safety app designed to protect, empower, and connect women in times of need. Built for real-life situations in schools, cities, and workspaces across Kenya and beyond.
 
 ---
 
 ## 🚀 Features
 
-- 🌐 **Home Section** – Introduction and mission of SafeSister.
-- 🛡️ **Protection Section** – Resources, guides, and safety tools.
-- 🚨 **Emergency Section** – Quick-action buttons and response information.
-- 🤖 **AI Chatbot** – For real-time answers, support, and guidance.
-- 📱 **Responsive Design** – Mobile-first, clean and accessible UI.
-- 🌈 **Modern Tech Stack** – Built using modern tools and best practices.
+- 🆘 One-tap SOS alerts
+- 📍 Real-time location sharing with trusted contacts
+- 📴 Offline emergency access
+- 📞 Directory of local helplines and safe spaces
+- 🔐 Data privacy and security-first design
+- 🌐 Simple, intuitive interface for all literacy levels
 
 ---
 
-## 🧰 Tech Stack
+## 📱 Getting Started
 
-- **Frontend**: React + Vite + TypeScript  
-- **Styling**: Tailwind CSS + ShadCN UI  
-- **Icons**: Lucide React  
-- **AI Integration**: Python (for backend AI/chatbot logic)  
-- **Deployment**: Vercel / Netlify / Localhost (your choice)
+### Prerequisites
 
----
+- Node.js and npm installed
+- Git installed
 
-## 📁 Getting Started
-
-Clone the repo:
+### Installation
 
 ```bash
-git clone https://github.com/your-username/safesister.git
-cd safesister
+git clone https://github.com/YourUsername/salamadada.git
+cd salamadada
 npm install
 npm run dev
+```
+
+---
+
+## 🛡️ Security Notice
+
+Security is a **core focus**. Currently, the app is in early stages. Future updates will include:
+- End-to-end encryption
+- 2FA login
+- Role-based access control
+- Security audits
+
+---
+
+## 📴 Offline Functionality
+
+SalamaDada is being optimized to work **even without internet**. Core safety features like SOS alerts and access to emergency contacts will still function offline.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+Please open an issue or submit a pull request.
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+## 💌 Contact
+
+Built with ❤️ by [Nsancy Kerubo](https://github.com/KeruboNancy)  
+For inquiries or collaborations: **salamadada@appsupport.co.ke**
+
+---
+
+## 🌍 Impact
+
+Over 2 million women across Africa, Asia, and Latin America face daily safety risks. SalamaDada is a step toward changing that reality.
